@@ -10,6 +10,7 @@ on:
 
 jobs:
   build-and-push-image:
+    name: Build and push image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -24,6 +25,13 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: pnowy/toolbox
+          tags: |
+            type=schedule
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=ref,event=branch
+            type=sha
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -31,4 +39,3 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
